@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3 Daily Trips in a Country Around the World</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>3 Daily Trips In A Country Around The World</h1>
+      <div class="input-group">
+        <label for="country">Country:</label>
+        <input type="text" id="country" name="country" />
+      </div>
+      <div class="input-group">
+        <label for="mode">Travel by:</label>
+        <select id="mode" name="mode">
+          <option value="walk">Walking</option>
+          <option value="car">Car</option>
+          <option value="bicycle">Bicycle</option>
+        </select>
+      </div>
+      <button id="generate">Generate</button>
+      <center>
+        <div id="output"></div>
+      </center>
+      <div id="recentTrips">
+        <h2>10 Recent Generated Saved Trips</h2>
+        <center>
+          <ul id="recentTripsList"></ul>
+        </center>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+    <script>
+      window.addEventListener("pageshow", function () {
+        function fetchRecentTrips() {
+          fetch("http://127.0.0.1:3001/recent_trips", { cache: "no-store" })
+            .then((response) => response.json())
+            .then((trips) => {
+              const list = document.getElementById("recentTripsList");
+              list.innerHTML = "";
+              trips.forEach((trip) => {
+                const listItem = document.createElement("li");
+                const link = document.createElement("a");
+                link.href = `trip.html?name=${encodeURIComponent(
+                  trip.name
+                )}&startLat=${trip.startLat}&startLng=${trip.startLng}&endLat=${
+                  trip.endLat
+                }&endLng=${trip.endLng}`;
+                link.textContent = trip.name;
+                listItem.appendChild(link);
+                list.appendChild(listItem);
+              });
+            })
+            .catch((error) =>
+              console.error("Failed to load recent trips:", error)
+            );
+        }
+
+        fetchRecentTrips(); // Fetch trips whenever the page is displayed
+      });
+    </script>
+  </body>
+</html>

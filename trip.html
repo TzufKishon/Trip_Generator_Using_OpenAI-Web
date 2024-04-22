@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Trip Viewer</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+    <link rel="stylesheet" href="trip.css"/>
+    <style>
+      #map {
+        height: 400px;
+      }
+      .leaflet-routing-container {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <center>
+      <div id="map"></div>
+      <img id="image" src="" alt="Generated Trip Image" />
+      <button id="saveTrip">Save This Trip</button>
+    </center>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <script>
+      // Declare variables at a higher scope
+      let name, startLat, startLng, endLat, endLng;
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        name = urlParams.get("name");
+        startLat = parseFloat(urlParams.get("startLat"));
+        startLng = parseFloat(urlParams.get("startLng"));
+        endLat = parseFloat(urlParams.get("endLat"));
+        endLng = parseFloat(urlParams.get("endLng"));
+
+        const map = L.map("map").setView([startLat, startLng], 13);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution:
+            'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }).addTo(map);
+
+        L.marker([startLat, startLng])
+          .addTo(map)
+          .bindPopup("Start: " + name)
+          .openPopup();
+        L.marker([endLat, endLng])
+          .addTo(map)
+          .bindPopup("End: " + name);
+
+        L.Routing.control({
+          waypoints: [L.latLng(startLat, startLng), L.latLng(endLat, endLng)],
+          lineOptions: {
+            styles: [{ color: "blue", opacity: 1, weight: 5 }],
+          },
+        }).addTo(map);
+
+        getImage(name);
+      });
+
+      function getImage(name) {
+        // Check local storage first to see if the image data already exists
+        const existingImage = localStorage.getItem(name);
+        if (existingImage) {
+          document.getElementById("image").src = existingImage;
+          return; // Image exists locally, no need to fetch from server
+        }
+
+        // If not found locally, fetch from the server
+        fetch("http://127.0.0.1:3000/image", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            document.getElementById("image").src = data;
+            // Optionally save the image data to local storage for future use
+            localStorage.setItem(name, data);
+          })
+          .catch((error) => {
+            console.error(
+              "There has been a problem with your fetch operation:",
+              error
+            );
+          });
+      }
+
+      document
+        .getElementById("saveTrip")
+        .addEventListener("click", function () {
+          const imageURL = document.getElementById("image").src;
+          const tripDetails = {
+            name: name,
+            startLat: startLat,
+            startLng: startLng,
+            endLat: endLat,
+            endLng: endLng,
+            image: imageURL,
+          };
+
+          fetch("http://127.0.0.1:3001/save_trip", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(tripDetails),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Trip saved successfully:", data.data); // Change this line to log the 'data' field
+            })
+            .catch((error) => console.error("Failed to save trip:", error));
+        });
+    </script>
+  </body>
+</html>

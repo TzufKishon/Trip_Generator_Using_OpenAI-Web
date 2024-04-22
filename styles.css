@@ -1,0 +1,101 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f9;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  justify-content: center;
+  background-image: url(tripImage.webp);
+  background-size: cover;
+  background-position: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 700px; /* Adjust width as necessary */
+  padding: 20px; /* Adds padding around the container */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  background: #ffffff; /* White background for contrast */
+  border-radius: 10px; /* Rounded corners for a softer look */
+  margin: 20px; /* Space around container */
+}
+
+h1,
+h2 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px; /* More space below headings */
+}
+
+.input-group {
+  margin-bottom: 20px; /* Increase space between input groups */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%; /* Full width to align with container */
+}
+
+label {
+  margin-bottom: 10px; /* Space below each label */
+}
+
+input[type="text"],
+select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 5px; /* Space after inputs */
+  width: calc(
+    100% - 22px
+  ); /* Adjusts width to accommodate padding and border */
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 24px; /* Larger padding for better touch interaction */
+  margin-top: 15px; /* More space above the button */
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%; /* Full-width button */
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+#output {
+  margin-top: 30px; /* More space above output area */
+  padding: 0px; /* Increased padding for a more spacious look */
+  background-color: #ffffff; /* Changed to white for a cleaner look */
+  width: 100%; /* Full width */
+  border: 1px solid #ccc; /* Subtle border for a defined edge */
+  border-radius: 8px; /* Soft rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); /* Softer shadow for a lighter depth effect */
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 20px; /* Space above the list */
+}
+
+li {
+  background-color: #e9ecef;
+  padding: 10px;
+  margin-bottom: 10px; /* Increased space between list items */
+  border-radius: 4px;
+}
+
+a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+a:hover {
+  text-decoration: underline;
+}
